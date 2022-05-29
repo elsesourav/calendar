@@ -279,10 +279,10 @@ const lrMove = (e) => {
   let nx = sx - x;
   storex += nx;
   if (storex > sence) {
-    goRight();
+    goLeft();
     moveLock = true;
   } else if (storex < -sence) {
-    goLeft();
+    goRight();
     moveLock = true;
   }
   sx = x;
