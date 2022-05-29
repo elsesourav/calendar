@@ -194,7 +194,7 @@ submitBtn.addEventListener("click", () => {
             localStorage.setItem("sb-calendar", JSON.stringify(""));
           }
           get(child(dbRef, `users/${userId}`)).then((snapshot) => {
-            localStorage.setItem("sb-calendar-userName", snapshot.val().name);
+            localStorage.setItem("sb-calendar-userName", `${snapshot.val().name}--${snapshot.val().username}--${snapshot.val().email}`);
             location.replace("./html/home.html");
           });
         })

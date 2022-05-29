@@ -292,9 +292,10 @@ function createAccount(fullName, username, gender, email, password) {
         {
           whySpecial: "SignUp Day",
           personeName: fullName,
-          day: date.getDate(),
-          month: date.getMonth() + 1,
-          year: date.getFullYear(),
+          dd: date.getDate(),
+          id: Date.now(),
+          mm: date.getMonth() + 1,
+          yy: date.getFullYear(),
           note: `${date.getDate()}-${
             date.getMonth() + 1
           }-${date.getFullYear()} তে তুমি প্রথম sign up করেছো আমাদের এই ক্যালেন্ডার অপপলিকাশনে ।

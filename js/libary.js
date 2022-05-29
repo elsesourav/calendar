@@ -1,16 +1,16 @@
 //---------------- lab ---------------------
 function hover(element) {
-    const addHover = (e) => {
-        e.classList.add("hover");
+    const addHover = () => {
+        element.classList.add("hover");
     }
-    const removeHover = (e) => {
-        e.classList.remove("hover");
+    const removeHover = () => {
+        element.classList.remove("hover");
     }
     element.addEventListener("touchstart", addHover);
-    element.addEventListener("onmouseenter", addHover);
+    element.addEventListener("mouseenter", addHover);
 
     element.addEventListener("touchend", removeHover);
-    element.addEventListener("onmouseleave", removeHover);
+    element.addEventListener("mouseleave", removeHover);
 }
 
 function b36t10(v) {

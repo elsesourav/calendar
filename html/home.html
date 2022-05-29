@@ -7,28 +7,72 @@
     <title>Calendar</title>
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/day-info.css" />
-    <script defer src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/8.9.1/firebase-analytics.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/8.9.1/firebase-auth.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/8.9.1/firebase-database.js"></script>
+    <link rel="stylesheet" href="../css/icon.css" />
+    <script
+      defer
+      src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"
+    ></script>
+    <script
+      defer
+      src="https://www.gstatic.com/firebasejs/8.9.1/firebase-analytics.js"
+    ></script>
+    <script
+      defer
+      src="https://www.gstatic.com/firebasejs/8.9.1/firebase-auth.js"
+    ></script>
+    <script
+      defer
+      src="https://www.gstatic.com/firebasejs/8.9.1/firebase-database.js"
+    ></script>
+    <script defer src="../js/libary.js"></script>
     <script defer src="../js/config.js"></script>
     <script defer src="../js/main.js"></script>
   </head>
   <body>
+    <div id="delete-alert">
+      <div id="delete-box">
+        <span><i class="sb-delete"></i></span>
+        <h3>Are You sure?</h3>
+        <pre>Do you really want to delete these records?
+            This records cannot be restore.</pre>
+        <div class="can-dlt">
+          <p id="delete-cancel">Cancel</p>
+          <p id="confirm-delete">Delete</p>
+        </div>
+      </div>
+    </div>
+    <div id="logout-alert">
+      <div id="logout-box">
+        <span><i class="sb-logout"></i></span>
+        <small id="show-username">Username: </small>
+        <small id="show-gmail">Gmail:</small>
+        <h3>Are You sure?</h3>
+        <div class="can-dlt">
+          <p id="logout-cancel">Cancel</p>
+          <p id="confirm-logout">Sign Out</p>
+        </div>
+      </div>
+    </div>
     <div id="fullScreen">
       <div id="welcome-user"></div>
-    </div> 
-    <div id="logout">Sign Out</div>
+    </div>
+    <div id="logout">
+      <i class="sb-logout"></i>
+    </div>
     <div id="copyright"><i>© </i>Sourav Barui 2022</div>
     <div id="month-changes">
-      <div id="left-month"></div>
+      <div id="left-month">
+        <i class="sb-go-left"></i>
+      </div>
       <header id="month-year-title">
         <span>
           <input type="text" id="month-input" />
           <input type="number" id="year-input" />
         </span>
       </header>
-      <div id="right-month"></div>
+      <div id="right-month">
+        <i class="sb-go-right"></i>
+      </div>
     </div>
     <section></section>
 
@@ -78,7 +122,9 @@
       </div>
       <div id="add-member-button">
         <div id="close">CLOSE</div>
-        <span></span>
+        <span>
+          <p><i class="sb-save"></i>SAVE</p>
+        </span>
       </div>
     </div>
     <main>

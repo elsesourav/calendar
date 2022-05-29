@@ -1,3 +1,4 @@
+const userDtls = localStorage.getItem("sb-calendar-userName").split("--");
 let userData = [];
 
 // // Initialize Firebase
@@ -12,25 +13,12 @@ firebase.auth().onAuthStateChanged((user) => {
   }
 });
 
-let logout = () => {
-  firebase.auth().signOut();
-};
 function setCookie(cname, cvalue, exdays) {
   const d = new Date();
   d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
   let expires = "expires=" + d.toUTCString();
   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
-document.getElementById("logout").addEventListener("click", () => {
-  setCookie("sb-calendar", ``, 0);
-  firebase
-    .database()
-    .ref(`users/${userId}/saveData`)
-    .set(userData)
-    .then(() => {
-      logout();
-    });
-});
 
 const section = document.querySelector("section");
 const monthYearTitle = document.getElementById("month-year-title");
@@ -42,7 +30,7 @@ const memberList = document.getElementById("scroll");
 const openTab = document.getElementById("open-tab");
 const main = document.querySelector("main");
 const addNewInput = document.getElementById("add-new-input");
-const close_flot_tab = document.getElementById("close");
+const closeFlotTab = document.getElementById("close");
 const colorPickeer = document.getElementById("color-pickeer");
 const openNewMT = document.getElementById("open-new-m-t");
 const addMemberFlotingWindow = document.getElementById(
@@ -59,6 +47,16 @@ const dayInfDate = document.getElementById("day-inf-date");
 const showDayName = document.getElementById("show-day-name");
 const fullScreen = document.getElementById("fullScreen");
 const welcomeUser = document.getElementById("welcome-user");
+const logoutBtn = document.getElementById("logout");
+
+const deleteAlert = document.getElementById("delete-alert");
+const deleteCancel = document.getElementById("delete-cancel");
+const confirmDelete = document.getElementById("confirm-delete");
+const logoutAlert = document.getElementById("logout-alert");
+const showUsername = document.getElementById("show-username");
+const showGmail = document.getElementById("show-gmail");
+const logoutCancel = document.getElementById("logout-cancel");
+const confirmLogout = document.getElementById("confirm-logout");
 
 const dayInformation = document.getElementById("day-information");
 const showDate = document.getElementById("show-date");
@@ -66,6 +64,26 @@ const openNewMoment = document.getElementById("open-new-whyspecial");
 const scrollBox = document.getElementById("scroll-box");
 const infoScrollList = document.getElementById("info-scroll-list");
 const title_p = document.querySelector("#title p");
+
+// firebase function 
+logoutBtn.addEventListener("click", () => {
+  setCookie("sb-calendar", ``, 0);
+  logoutAlert.classList.add("active");
+  showUsername.innerHTML = `Username: ${userDtls[1]}`;
+  showGmail.innerHTML = `Gmail: ${userDtls[2]}`;
+  confirmLogout.addEventListener("click", () => {
+    firebase
+    .database()
+    .ref(`users/${userId}/saveData`)
+    .set(userData)
+    .then(() => {
+      firebase.auth().signOut();
+    });
+  })
+  logoutCancel.addEventListener("click", () => {
+    logoutAlert.classList.remove("active");
+  })
+});
 
 /* -------------- inmportant function ------------- */
 // chack year is lepe year
@@ -125,31 +143,66 @@ const getAge = (startDate, endDate, inMonth = false) => {
   };
 };
 
+// find index in array
+const getArrayIndex = (ary, id) => ary.findIndex((e) => e.id == id);
+
+// return string to integer
+const Int = (num) => parseInt(num);
+
+// given age exist in data
+const ageExistInData = (yy, mm, dd) => {
+  let ary = [];
+  const e = userData;
+  for (let i = 0; i < e.length; i++) {
+    if (Int(e[i].yy) <= yy && Int(e[i].mm) == mm + 1 && Int(e[i].dd) == dd)
+      ary.push(e[i]);
+  }
+  return (ary = ary.length > 0 ? ary : false);
+};
+
+// scroll element left to right
+const scrollElement = (element, duration, delay = 0) => {
+  element.scrollLeft = 0;
+  const FPS = 90;
+  let distence = element.scrollWidth;
+  let times = distence / FPS;
+  let i = 0;
+  setTimeout(() => {
+    const f = () => {
+      infoScrollList.scrollLeft += times;
+      if (i++ < FPS) setTimeout(f, duration / FPS);
+    };
+    f();
+  }, delay);
+};
+
 let winWidth = window.innerWidth;
 let winHeight = window.innerHeight;
 
 let Delete, m_spans;
+let editUserIndex = false;
 addNewInput.defaultValue = "2001-07-07";
-let _d = new Date();
-let currentMonth = _d.getMonth();
-let currentYear = _d.getFullYear();
-let currentDate = _d.getDate();
-let currentHour = _d.getHours();
-let currentMinute = _d.getMinutes(); 
-let currentSecond = _d.getSeconds();
-let selectedColorI = 0; 
-let tabOpenIs = false; 
+
+const d_ = () => new Date();
+let crntMM = d_().getMonth();
+let crntYY = d_().getFullYear();
+let crntDD = d_().getDate();
+let crntHH = d_().getHours();
+let currentMinute = d_().getMinutes();
+let currentSecond = d_().getSeconds();
+let selectedColorI = 0;
+let tabOpenIs = false;
 let months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-let tudayDate = {
-  year: currentYear,
-  month: currentMonth,
-  day: currentDate,
-  hour: currentHour,
+const tudayDate = {
+  year: crntYY,
+  month: crntMM,
+  day: crntDD,
+  hour: crntHH,
   minute: currentMinute,
   second: currentSecond,
 };
-let monthName = [
+const monthName = [
   "January",
   "February",
   "March",
@@ -163,7 +216,7 @@ let monthName = [
   "November",
   "December",
 ];
-let daysName = [
+const daysName = [
   "Sunday",
   "Monday",
   "Tuesday",
@@ -172,19 +225,22 @@ let daysName = [
   "Friday",
   "Saturday",
 ];
-let sortDayName = ["SUN", "MON", "TUE", "WED", "THD", "FRI", "SAT"];
+const shortDayName = ["SUN", "MON", "TUE", "WED", "THD", "FRI", "SAT"];
 
 // -----------------------------------------------------
-// ------ first time initilizion ----- 
+// ------ first time initilizion -----
 if (JSON.parse(localStorage.getItem("sb-calendar"))) {
   userData = JSON.parse(localStorage.getItem("sb-calendar"));
 }
+
+userData.forEach((e) => {
+  addMember(e);
+});
 setTimeout(() => {
-  main.style.bottom = `${- (main.clientHeight)}px`;
+  main.style.bottom = `${-main.clientHeight}px`;
 }, 350);
 
-let userName = localStorage.getItem("sb-calendar-userName");
-welcomeUser.innerHTML = `<h1>Welcome</h1><div class="nm" style="animation:ani-color 5s linear infinite">${userName}</div>
+welcomeUser.innerHTML = `<h1>Welcome</h1><div class="nm" style="animation:ani-color 5s linear infinite">${userDtls[0]}</div>
   <br>
   <p style="padding: 5px 0">Please Scroll Down</p>
   <span id="d1"></span><span id="d2"></span>
@@ -192,9 +248,17 @@ welcomeUser.innerHTML = `<h1>Welcome</h1><div class="nm" style="animation:ani-co
   <span id="d5"></span>
   `;
 
-setBord(currentMonth, currentYear);
-monthInput.value = monthName[currentMonth];
-yearInput.value = currentYear;
+setBord();
+monthInput.value = monthName[crntMM];
+yearInput.value = crntYY;
+
+// hover class set
+hover(leftMonth);
+hover(rightMonth);
+hover(deleteCancel);
+hover(confirmDelete);
+hover(logoutCancel);
+hover(confirmLogout);
 
 // ------- left right month event hendaler -------
 leftMonth.addEventListener("click", goLeft);
@@ -215,10 +279,10 @@ const lrMove = (e) => {
   let nx = sx - x;
   storex += nx;
   if (storex > sence) {
-    goLeft();
+    goRight();
     moveLock = true;
   } else if (storex < -sence) {
-    goRight();
+    goLeft();
     moveLock = true;
   }
   sx = x;
@@ -229,71 +293,60 @@ const lrEnd = () => {
 };
 
 dayInformation.addEventListener("touchstart", () => (moveLock = true));
-section.addEventListener("touchstart", lrStart);
-section.addEventListener("touchmove", lrMove);
-section.addEventListener("touchend", lrEnd);
 document.body.addEventListener("touchstart", lrStart);
 document.body.addEventListener("touchmove", lrMove);
 document.body.addEventListener("touchend", lrEnd);
 
 function goLeft() {
-  if (currentMonth == 0) {
-    currentMonth = 11;
-    if (currentYear > 0) {
-      currentYear--;
-      setYearInInput(currentYear);
-    }
-  } else if (currentYear > 0) {
-    currentMonth--;
-    monthInput.value = monthName[currentMonth];
-  }
-  setBord(currentMonth, currentYear);
+  if (crntYY <= 1 && crntMM == 0) return;
+  if (crntMM <= 0) {
+    crntMM = 11;
+    crntYY--;
+    setYearInInput(crntYY);
+  } else crntMM--;
+  monthInput.value = monthName[crntMM];
+  setBord();
 }
 function goRight() {
-  if (currentMonth == 11) {
-    currentMonth = 0;
-    if (currentYear < 9001) {
-      currentYear++;
-      setYearInInput(currentYear);
-    }
-  } else {
-    currentMonth++;
-    monthInput.value = monthName[currentMonth];
-  }
-  setBord(currentMonth, currentYear);
+  if (crntYY >= 9999 && crntMM == 11) return;
+  if (crntMM >= 11) {
+    crntMM = 0;
+    crntYY++;
+    setYearInInput(crntYY);
+  } else crntMM++;
+  monthInput.value = monthName[crntMM];
+  setBord();
 }
 
 // -------- input event hendale -----------
 monthInput.addEventListener("focusout", (e) => {
   monthInput.setAttribute("type", "text");
-  e.target.value = monthName[currentMonth];
+  e.target.value = monthName[crntMM];
 });
 monthInput.addEventListener("click", (e) => {
   monthInput.setAttribute("type", "number");
-  e.target.value =
-    currentMonth + 1 < 10 ? `0${currentMonth + 1}` : currentMonth + 1;
+  e.target.value = crntMM + 1 < 10 ? `0${crntMM + 1}` : crntMM + 1;
   monthInput.select();
 });
 monthInput.addEventListener("input", (e) => {
   monthInput.setAttribute("type", "number");
   let val = Number(e.target.value);
-  if (val > 0 && val < 13) currentMonth = val - 1;
+  if (val > 0 && val < 13) crntMM = val - 1;
   e.target.value = val;
-  setBord(currentMonth, currentYear);
+  setBord();
 });
 
 //------------------------------------
 yearInput.addEventListener("focusout", (e) => {
-  setYearInInput(currentYear);
+  setYearInInput(crntYY);
 });
 yearInput.addEventListener("click", (e) => {
   yearInput.select();
 });
 yearInput.addEventListener("input", (e) => {
   yearInput.setAttribute("type", "number");
-  if (e.target.value > 0 && e.target.value < 9001)
-    currentYear = parseInt(e.target.value);
-  setBord(currentMonth, currentYear);
+  if (e.target.value > 0 && e.target.value < 9001) crntYY = Int(e.target.value);
+  setBord();
 });
 
 let wy,
@@ -378,47 +431,90 @@ function fullScreenPag() {
 colorsSelect.forEach((e, i) => {
   e.addEventListener("click", () => {
     colorsSelect.forEach((E) => {
-      if (E.classList.contains("select")) {
-        E.classList.remove("select");
-      }
+      E.classList.remove("select");
     });
     selectedColorI = i;
     e.classList.add("select");
+    chackAllInputFill();
   });
 });
+function setColorSelector(index) {
+  colorsSelect.forEach((e, i) => {
+    if (i == index) e.classList.add("select");
+    else e.classList.remove("select");
+  });
+}
+let inputFill = false;
+document.addEventListener("input", chackAllInputFill);
+function chackAllInputFill() {
+  inputFill = false;
+  if (
+    inputWhySpecial.value.length > 2 &&
+    inputPersonName.value.length > 2 &&
+    inputNote.value.length > 2 &&
+    addNewInput.value != ""
+  ) {
+    addMB_span.style.background = "#0000ff";
+    inputFill = true;
+  } else {
+    inputFill = false;
+    addMB_span.style.background = "#a0a0ff";
+  }
+}
+hover(addMB_span);
 addMB_span.addEventListener("click", () => {
+  if (!inputFill) return;
   let DATE = addNewInput.value.split("-");
-  let spl = inputWhySpecial.value;
-  let nm = inputPersonName.value;
-  let not = inputNote.value;
-  userData.push({
+  const spl = inputWhySpecial.value;
+  const nm = inputPersonName.value;
+  const note = inputNote.value;
+  const obj = {
     whySpecial: spl,
     personeName: nm,
-    day: DATE[2],
-    month: DATE[1],
-    year: DATE[0],
-    note: not,
+    dd: DATE[2],
+    id: Date.now(),
+    mm: DATE[1],
+    yy: DATE[0],
+    note: note,
     colorI: selectedColorI,
-  });
+  };
+  if (editUserIndex) {
+    userData[Int(editUserIndex)] = obj;
+    memberList.innerHTML = "";
+    userData.forEach((e) => {
+      addMember(obj);
+    });
+  } else {
+    addMember(obj, true);
+    userData.push(obj);
+    addNewInput.value = "2001-07-07";
+    inputNote.value = "";
+    inputWhySpecial.value = "";
+    inputPersonName.value = "";
+    selectedColorI = 0;
+  }
   localStorage.setItem("sb-calendar", JSON.stringify(userData));
   firebase.database().ref(`users/${userId}/saveData`).set(userData);
-  addMember();
-  setBord(currentMonth, currentYear);
+  setBord();
+  addMemberFlotingWindow.classList.remove("active");
+});
+
+//------------------------------------------------
+hover(closeFlotTab);
+closeFlotTab.addEventListener("click", () => {
   addNewInput.value = "2001-07-07";
   inputNote.value = "";
   inputWhySpecial.value = "";
   inputPersonName.value = "";
   selectedColorI = 0;
-  setMemberData(true);
+  editUserIndex = false;
+  chackAllInputFill();
   addMemberFlotingWindow.classList.remove("active");
 });
-
-//------------------------------------------------
-close_flot_tab.addEventListener("click", () => {
-  addMemberFlotingWindow.classList.remove("active");
-});
+hover(openNewMT);
 openNewMT.addEventListener("click", () => {
   addMemberFlotingWindow.classList.add("active");
+  setColorSelector(selectedColorI);
 });
 function setYearInInput(year) {
   yearInput.value =
@@ -440,17 +536,19 @@ dayInfCloseBtn.addEventListener("click", () => {
   }, 100);
   setTimeout(() => {
     dayInformation.style.transform = `scale(0)`;
-    setBord(currentMonth, currentYear);
+    setBord();
   }, 300);
 });
 
 // --------------------------------------------------
-function setBord(month, year) {
+function setBord() {
   section.innerHTML = "";
-  scrollCard.innerHTML = "";
+
+  const month = crntMM;
+  const year = crntYY;
 
   // set days name
-  sortDayName.forEach((e) => {
+  shortDayName.forEach((e) => {
     const n = document.createElement("div");
     n.innerText = e;
     n.classList.add("day-name");
@@ -474,20 +572,9 @@ function setBord(month, year) {
     n.classList.add("days");
 
     userData.forEach((e) => {
-      if (
-        year >= parseInt(e.year) &&
-        parseInt(e.day) == i &&
-        parseInt(e.month) == month + 1
-      ) {
+      if (year >= Int(e.yy) && Int(e.dd) == i && Int(e.mm) == month + 1) {
         n.classList.add(`bg${e.colorI}`);
         n.classList.add(`glow`);
-        createDayInfo(n, e);
-        n.addEventListener("click", () => {
-          dayInformation.style.display = `scale(1)`;
-          setTimeout(() => {
-            dayInformation.style.background = `rgba(0, 0, 0, 0.6)`;
-          }, 200);
-        });
       }
     });
     if (
@@ -501,9 +588,36 @@ function setBord(month, year) {
       n.classList.add("odd");
     }
     section.appendChild(n);
+    n.addEventListener("click", () => {
+      const element = ageExistInData(crntYY, crntMM, i);
+      if (element) {
+        scrollCard.innerHTML = "";
+        element.forEach((e) => {
+          dayInformation.style.transform = `scale(1)`;
+          setTimeout(() => {
+            dayInformation.style.background = `rgba(0, 0, 0, 0.6)`;
+          }, 200);
+          bordMaker(e);
+        });
+        scrollElement(infoScrollList, 300, 300);
+      } else {
+        let cm = crntMM + 1;
+        let mm = cm.toString().length > 1 ? cm : `0${cm}`;
+        let dd = i.toString().length > 1 ? i : `0${i}`;
+        addNewInput.value = `${crntYY}-${mm}-${dd}`;
+        inputNote.value = "";
+        inputWhySpecial.value = "";
+        inputPersonName.value = "";
+        selectedColorI = 0;
+        addMemberFlotingWindow.classList.add("active");
+        setColorSelector(selectedColorI);
+        if (!tabOpenIs) {
+          toggelAddMemberMenu();
+        }
+      }
+    });
   }
 }
-
 function giveMeName(str) {
   let s = "";
   str.split(" ").forEach((e) => {
@@ -512,45 +626,42 @@ function giveMeName(str) {
   return s;
 }
 
-function createDayInfo(element, obj) {
-  element.addEventListener("click", () => {
-    dayInformation.style.transform = `scale(1)`;
-    setTimeout(() => {
-      dayInformation.style.background = `rgba(0, 0, 0, 0.6)`;
-    }, 200);
-    bordMaker(obj);
-  });
-}
-
 function bordMaker(obj) {
-  let _year = parseInt(obj.year),
-    _months = parseInt(obj.month) - 1,
-    _days = parseInt(obj.day);
+  const _year = Int(obj.yy),
+    _months = Int(obj.mm) - 1,
+    _days = Int(obj.dd);
+  const cyy = d_().getFullYear(),
+    cmm = d_().getMonth(),
+    cdd = d_().getDate();
+
   let y;
 
-  if (!isLepeYear(currentYear) && _months == 1) {
-    y = currentYear + (4 - (currentYear % 4));
-  } else if (_months > _d.getMonth()) {
-    y = currentYear;
+  if (isLepeYear(crntYY) && _months == 1 && _days == 29) {
+    y = crntYY + 4 >= cyy ? crntYY : crntYY + 4;
+  } else if (
+    (crntYY == cyy && crntMM == cmm && _days < cdd) ||
+    (crntYY == cyy && crntMM < cmm)
+  ) {
+    y = crntYY + 1;
   } else {
-    y = currentYear + 1;
+    y = crntYY;
   }
 
   let nextAge = new Date(y, _months, _days);
   let age = new Date(_year, _months, _days);
-  let currentAge = new Date(currentYear, currentMonth, _days);
+  let currentAge = new Date(crntYY, crntMM, _days);
 
-  let totalAge = getAge(age, _d);
-  let leftAge = getAge(_d, nextAge, true);
+  let totalAge = getAge(age, d_());
+  let leftAge = getAge(d_(), nextAge, true);
 
-  dayInfDate.innerHTML = `${obj.day}-${obj.month}-${currentYear}`;
+  dayInfDate.innerHTML = `${obj.dd}-${obj.mm}-${crntYY}`;
   showDayName.innerHTML = daysName[currentAge.getDay()];
-  scrollCard.innerHTML += `<div class="card bg${obj.colorI}">
+  scrollCard.innerHTML += `<div class="card bg${obj.colorI}"> 
   <div class="card-inset"> 
   <div class="-card-back"></div>
   <div class="why-special">${obj.whySpecial}</div> 
   <div class="start-date-dayname">
-    ${obj.day}-${obj.month}-${obj.year}  ${daysName[age.getDay()]}
+    ${obj.dd}-${obj.mm}-${obj.yy}  ${daysName[age.getDay()]}
   </div>
   <div class="person-name">
     ${giveMeName(obj.personeName)}
@@ -606,66 +717,89 @@ function bordMaker(obj) {
 </div>`;
 }
 
-openTab.addEventListener("click", () => { 
+openTab.addEventListener("click", toggelAddMemberMenu);
+function toggelAddMemberMenu() {
   if (tabOpenIs) {
     main.style.bottom = `${-main.clientHeight}px`;
-    openTab.classList.remove("active");  
+    openTab.classList.remove("active");
   } else {
     main.style.bottom = 0;
     openTab.classList.add("active");
   }
   tabOpenIs = tabOpenIs ? false : true;
-});
+}
 
-setMemberData();
-function setMemberData(ifAdd = false) {
-  memberList.innerHTML = "";
-  userData.forEach((e, i) => {
-    const n = document.createElement("div");
-    const s = document.createElement("span");
-    const d = document.createElement("div");
+function addMember(element, is = false) {
+  const member = document.createElement("div");
+  const status = document.createElement("span");
+  const edit = document.createElement("div");
+  const dlte = document.createElement("div");
+  hover(dlte);
+  hover(edit);
 
-    n.classList.add("members");
-    d.classList.add("delete");
+  member.classList.add("members");
+  dlte.classList.add("delete");
+  edit.classList.add("edit");
 
-    s.innerHTML = `
-        <p>${e.personeName}</p>
-        <small>${e.day}/${e.month}/${e.year}</small>
-    `;
-    d.innerText = "Delete";
-    n.appendChild(s);
-    n.appendChild(d);
-    memberList.appendChild(n);
+  status.innerHTML = `
+      <p>${element.personeName}</p>
+      <small>${element.dd}/${element.mm}/${element.yy}</small>
+  `;
+  edit.innerHTML = `<i class="sb-edit"></i>`;
+  dlte.innerHTML = `<i class="sb-delete"></i>`;
+  member.appendChild(status);
+  member.appendChild(edit);
+  member.appendChild(dlte);
+  memberList.appendChild(member);
 
-    if(ifAdd && i === userData.length - 1) {
-      setTimeout(() => {
-        n.style.height = "40px";
-      }, 300);
-    }else {
-      n.style.height = "40px";
-    }
-    s.addEventListener("click", () => {
-      dayInformation.style.transform = `scale(1)`;
-      setTimeout(() => {
-        dayInformation.style.background = `rgba(0, 0, 0, 0.6)`;
-      }, 200);
-      bordMaker(userData[i]);
-    });
-    d.addEventListener("click", () => {
-      userData.splice(i, 1);
-      n.style.height = 0; 
-      setTimeout(() => {
-        memberList.removeChild(n);
-      }, 300);
-      firebase.database().ref(`users/${userId}/saveData`).set(userData);
-      localStorage.setItem("sb-calendar", JSON.stringify(userData));
-      setBord(currentMonth, currentYear);
-    })
+  if (is)
+    setTimeout(() => {
+      member.style.height = "40px";
+    }, 300);
+  else member.style.height = "40px";
+
+  status.addEventListener("click", () => {
+    dayInformation.style.transform = `scale(1)`;
+    setTimeout(() => {
+      dayInformation.style.background = `rgba(0, 0, 0, 0.6)`;
+    }, 200);
+    let index = getArrayIndex(userData, element.id);
+    scrollCard.innerHTML = "";
+    bordMaker(userData[index]);
+  });
+  edit.addEventListener("click", () => {
+    let index = getArrayIndex(userData, element.id);
+    let da = userData[index];
+    addNewInput.value = `${da.yy}-${da.mm}-${da.dd}`;
+    inputNote.value = da.note;
+    inputWhySpecial.value = da.whySpecial;
+    inputPersonName.value = da.personeName;
+    selectedColorI = Int(da.colorI);
+    editUserIndex = index.toString();
+    addMemberFlotingWindow.classList.add("active");
+    setColorSelector(selectedColorI);
+    setBord();
+  });
+  dlte.addEventListener("click", () => {
+    let index = getArrayIndex(userData, element.id);
+    deleteMember(index, member);
   });
 }
-const FPS = 2 / 60;
-function update() {
-  _d = new Date();
-  setTimeout(update, 1000 / FPS);
+
+function deleteMember(index, member) {
+  deleteAlert.classList.add("active");
+  confirmDelete.addEventListener("click", () => {
+    userData.splice(index, 1);
+    firebase.database().ref(`users/${userId}/saveData`).set(userData);
+    member.style.height = 0;
+    setTimeout(() => {
+      memberList.removeChild(member);
+    }, 300);
+    deleteAlert.classList.remove("active");
+    localStorage.setItem("sb-calendar", JSON.stringify(userData));
+    setBord();
+  })
+  deleteCancel.addEventListener("click", () => {
+    deleteAlert.classList.remove("active");
+  });
 }
-update();

@@ -1,0 +1,47 @@
+@font-face {
+  font-family: "-sb-";
+  src: url("../font/icomoon.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="sb-"],
+[class*=" sb-"],
+[class^="sb-"]::before,
+[class*=" sb-"]::before,
+[class^="sb-"]::after,
+[class*=" sb-"]::after {
+  font-family: "-sb-";
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+[class^="sb-"]::before,
+[class*=" sb-"]::before {
+  transform: translateX(5%);
+}
+.sb-logout:before {
+  content: "\e1";
+}
+.sb-delete:before {
+  content: "\e2";
+}
+.sb-edit:before { 
+  content: "\e3";
+}
+.sb-save:before { 
+  content: "\e4";
+}
+.sb-go-left:before {
+  content: "\e5";
+}
+.sb-go-right:before { 
+  content: "\e5";
+}
+
