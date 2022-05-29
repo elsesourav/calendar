@@ -279,10 +279,10 @@ const lrMove = (e) => {
   let nx = sx - x;
   storex += nx;
   if (storex > sence) {
-    goRight();
+    goLeft();
     moveLock = true;
   } else if (storex < -sence) {
-    goLeft();
+    goRight();
     moveLock = true;
   }
   sx = x;
@@ -384,15 +384,19 @@ function m_and_t_move(_y) {
 }
 
 function m_and_t_end() {
-  if (sy > 200) {
+  if (sy > 100) {
     olrady = true;
     fullScreen.style.top = `${-winHeight * 1.4}px`;
+    welcomeUser.style.transition = `linear 0.3s`;
+    welcomeUser.style.transform = `translateY(${0}px)`;
     fullScreenPag();
+    sy = 0;
+  }else {
+    sy = 0;
+    olrady = false;
+    welcomeUser.style.transition = `linear 0.3s`;
+    welcomeUser.style.transform = `translateY(${sy}px)`;
   }
-  sy = 0;
-  olrady = false;
-  welcomeUser.style.transition = `linear 0.3s`;
-  welcomeUser.style.transform = `translateY(${-sy}px)`;
 }
 
 fullScreen.addEventListener("touchstart", touchStart);
