@@ -238,12 +238,12 @@
   width: 100%;
   height: 100%;
   max-height: 50px;
-  text-align: center;
   padding: 5px 3px;
   overflow-y: scroll;
   overflow-x: hidden;
 }
 .card .card-inset .note p {
+  text-align: center;
   width: 100%;
   font-size: 8px;
   color: #000;

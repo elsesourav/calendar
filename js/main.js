@@ -279,10 +279,10 @@ const lrMove = (e) => {
   let nx = sx - x;
   storex += nx;
   if (storex > sence) {
-    goLeft();
+    goRight();
     moveLock = true;
   } else if (storex < -sence) {
-    goRight();
+    goLeft();
     moveLock = true;
   }
   sx = x;
@@ -454,7 +454,7 @@ function chackAllInputFill() {
   inputFill = false;
   if (
     inputWhySpecial.value.length > 2 &&
-    inputPersonName.value.length > 2 &&
+    inputPersonName.value.length > 1 &&
     inputNote.value.length > 2 &&
     addNewInput.value != ""
   ) {
