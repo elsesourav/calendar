@@ -59,6 +59,21 @@ function remInpUndCls(index) {
   out[index].classList.remove("u2");
 }
 
+// convert 'sourav barui' ---> 'Sourav Barui' 
+const nameModyfi = (naem) => {
+  let str = "";
+  let nameAry = naem.split(" ");
+  nameAry.forEach((e) => {
+    for (let i = 0; i < e.length; i++) {
+      if(i === 0) str += e[i].toUpperCase();
+      else str += e[i].toLowerCase();
+    }
+    str += " ";
+  })
+  return str;
+}
+
+
 const underline = (index, color) => {
   let Color = color == "red" ? "u1" : "u2";
   let opoColor = Color == "u1" ? "u2" : "u1";
@@ -252,9 +267,9 @@ confirmBtn.addEventListener("click", () => {
       E.style.borderBottom = "2px solid #f00";
     });
     return;
-  } else {
+  } else { 
     createAccount(
-      fullName.value,
+      nameModyfi(fullName.value),
       username.value,
       gender,
       email.value,
@@ -288,13 +303,17 @@ function createAccount(fullName, username, gender, email, password) {
         gender
       );
       const date = new Date();
+      let _dy = date.getDate()
+      let cm = date.getMonth() + 1;
+      let mm = cm.toString().length > 1 ? cm : `0${cm}`;
+      let dd = _dy.toString().length > 1 ? _dy : `0${_dy}`;
       let userData = [
         {
           whySpecial: "SignUp Day",
           personeName: fullName,
-          dd: date.getDate(),
+          dd: dd,
           id: Date.now(),
-          mm: date.getMonth() + 1,
+          mm: mm,
           yy: date.getFullYear(),
           note: `${date.getDate()}-${
             date.getMonth() + 1

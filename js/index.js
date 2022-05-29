@@ -199,7 +199,7 @@ submitBtn.addEventListener("click", () => {
           });
         })
         .catch((error) => {
-          console.log();
+          console.log(error);
         });
     })
     .catch((err) => {

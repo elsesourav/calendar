@@ -379,16 +379,16 @@ function m_and_t_move(_y) {
   if (olrady) return;
   let y = wy - _y;
   sy += y * 2;
-  if (sy > 100) {
-    olrady = true;
-    fullScreen.style.top = `${-winHeight * 1.4}px`;
-    fullScreenPag();
-  }
   welcomeUser.style.transform = `translateY(${-sy}px)`;
   wy = _y;
 }
 
 function m_and_t_end() {
+  if (sy > 200) {
+    olrady = true;
+    fullScreen.style.top = `${-winHeight * 1.4}px`;
+    fullScreenPag();
+  }
   sy = 0;
   olrady = false;
   welcomeUser.style.transition = `linear 0.3s`;
