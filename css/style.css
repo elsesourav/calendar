@@ -865,6 +865,8 @@ main #member-list .members span {
   width: 100%;
   display: grid;
   grid-template-rows: 20fr 15fr;
+  z-index: 10;
+  cursor: pointer;
 }
 main #member-list .members span p {
   font-size: 0.8rem;
@@ -900,6 +902,8 @@ main #member-list .members span small {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 10;
+  cursor: pointer;
 }
 .members .delete::before,
 .members .edit::before,
