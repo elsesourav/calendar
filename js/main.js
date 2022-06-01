@@ -483,10 +483,12 @@ addMB_span.addEventListener("click", () => {
     colorI: selectedColorI,
   };
   if (editUserIndex) {
+    console.log(userData);
     userData[Int(editUserIndex)] = obj;
     memberList.innerHTML = "";
+    console.log(userData);
     userData.forEach((e) => {
-      addMember(obj);
+      addMember(e);
     });
   } else {
     addMember(obj, true);

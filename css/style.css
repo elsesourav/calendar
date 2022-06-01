@@ -793,9 +793,21 @@ main #open-new-m-t p {
   font-size: 0.8rem;
   font-weight: 700;
   text-shadow: 0 0 1px #000;
-  box-shadow: inset 0 0 3px #00000047, inset 0 3px 3px #ffffff6c,
-    inset 0 -3px 3px #00000033, 0 0 3px #00000088;
   outline: solid 1px #0000ff;
+}
+main #open-new-m-t p::before,
+main #open-new-m-t p::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #ffffff33 #00000033 #00000033 #00000033;
+  border-radius: 6px;
+}
+main #open-new-m-t p::after {
+  border-width: 3px;
 }
 main #open-new-m-t.hover p {
   font-size: 0.75rem;
@@ -828,6 +840,21 @@ main #member-list .members {
   box-shadow: inset 0 3px 3px #00000020, inset 0 -3px 3px #ffffff57,
     inset 0 0 3px #00000020;
   transition: ease-in-out 0.3s;
+}
+main #member-list .members::before,
+main #member-list .members::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #00000033 #00000033 #ffffff33 #00000033;
+  border-radius: 6px;
+}
+main #member-list .members::after {
+  border-width: 3px;
+  border-color: #00000033 #00000022 #ffffff22 #00000022;
 }
 main #member-list .members:nth-child(odd) {
   background: linear-gradient(180deg, #bbb, #aaa);
@@ -865,13 +892,31 @@ main #member-list .members span small {
 .members .delete,
 .members .edit {
   position: relative;
-  width: calc(100% - 16px);
-  height: calc(100% - 8px);
-  inset: 4px 8px;
+  width: calc(100% - 20px);
+  height: calc(100% - 12px);
+  inset: 6px 10px;
   font-weight: 600;
   border-radius: 6px;
-  box-shadow: inset 0 0 3px #00000047, inset 0 3px 3px #ffffff6c,
-    inset 0 -3px 3px #00000033, 0 0 3px #00000088;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.members .delete::before,
+.members .edit::before,
+.members .delete::after,
+.members .edit::after {
+  content: "";
+  position: absolute;
+  width: 105%;
+  height: 105%;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #ffffff33 #00000022 #00000033 #00000022;
+  border-radius: 8px;
+}
+.members .delete::after,
+.members .edit::after {
+  border-width: 4px;
 }
 .members .delete {
   margin-right: 8px;
