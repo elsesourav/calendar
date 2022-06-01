@@ -389,7 +389,7 @@ function m_and_t_end() {
     fullScreen.style.top = `${-winHeight * 1.4}px`;
     welcomeUser.style.transition = `linear 0.3s`;
     welcomeUser.style.transform = `translateY(${0}px)`;
-    // fullScreenPag();
+    fullScreenPag();
     sy = 0;
   }else {
     sy = 0;
